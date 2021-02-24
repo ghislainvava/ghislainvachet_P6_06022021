@@ -1,5 +1,7 @@
 const Sauce = require('../models/sauce');
 const fs = require('fs'); // pour utiliser le CRUD
+const sauce = require('../models/sauce');
+
 
 //recuperation de toute les sauces
 exports.getAllSauces = (req, res) => {
@@ -9,12 +11,13 @@ exports.getAllSauces = (req, res) => {
 };
 
 //Recherche une sauce avec l'id 
-exports.getOneSauces = (req, res, next) => {
+exports.getOneSauces = (req, res) => {
     Sauce.findOne({ _id: req.params.id })
         .then(sauce => res.status(200).json(sauce))
         .catch(error => res.status(404).json({ error }));
 };
-//Créer une sauce à partir du body de la requetes
+
+//Créer une sauce 
 exports.createSauce = (req, res) => {
     const sauce = new Sauce({
         ...JSON.parse(req.body.sauce),
@@ -24,6 +27,7 @@ exports.createSauce = (req, res) => {
         .then(() => res.status(201).json({ message: 'Sauce ajoutéé !' }))
         .catch(error => res.status(400).json({ error }));
 };
+
 //Modifie une sauce 
 exports.modifySauce = (req, res) => {
     const sauce = req.file ?
@@ -35,7 +39,7 @@ exports.modifySauce = (req, res) => {
         .then(() => res.status(200).json({ message: 'Sauce modifié !' }))
         .catch(error => res.status(400).json({ error }));
 }
-//Recherche une sauce en fonction de l'id en parametre et la supprime.
+//Recherche une sauce avec l'id et la supprime.
 exports.clearOneSauce = (req, res) => {
     Sauce.findOne({ _id: req.params.id })
         .then(sauce => {
@@ -47,4 +51,39 @@ exports.clearOneSauce = (req, res) => {
             });
         })
         .catch(error => res.status(500).json({ error }));
+};
+
+exports.sauceLike = (req, res) => {
+   const liker = req.body.userId;
+   const id = req.params.id;
+  
+    if (req.body.like === 0) {
+        Sauce.findOne({ _id: id })
+        .then(sauce => {
+            if (sauce.usersLiked.includes(liker)) {
+            Sauce.updateOne({ _id: id },
+                 { $inc: { likes: - 1 },$pull: { usersLiked: liker } })
+                .then(() => res.status(200).json("vous n'aimez plus cette sauce !"))
+                .catch(error => res.status(400).json({ error }));
+            }
+            if (sauce.usersDisliked.includes(liker)) {
+            Sauce.updateOne({ _id: id },
+                { $inc: { dislikes: - 1 }, $pull: { usersDisliked: liker } })
+                .then(() => res.status(200).json(" vous ne détestez plus cette sauce !"))
+                .catch(error => res.status(400).json({ error }));
+            }
+        })
+    }
+    if (req.body.like === 1) {
+        Sauce.updateOne({ _id: id }, 
+            { $inc: { likes: + 1 }, $push: { usersLiked: liker } })
+            .then(() => res.status(200).json("vous aimez cette sauce !"))
+            .catch(error => res.status(400).json({ error }));
+    }
+    if (req.body.like === -1) {
+        Sauce.updateOne({ _id: id }, 
+            { $inc: { dislikes: + 1 }, $push: { usersDisliked: liker } })
+            .then(() => res.status(200).json("vous n'aimez pas cette sauce !"))
+            .catch(error => res.status(400).json({ error }));
+    }
 };

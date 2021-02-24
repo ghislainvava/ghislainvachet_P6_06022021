@@ -1,4 +1,4 @@
-const multer = require('multer');
+const multer = require('multer'); // sert à gérer les fichiers entrants
 
 const MIME_TYPES = {//extension possible à récupérer
   'image/jpg': 'jpg',

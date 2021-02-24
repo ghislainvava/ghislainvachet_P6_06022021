@@ -1,4 +1,4 @@
-const password_validator = require('../middleware/password_validator');
+const password_validator = require('../models/password_validator');
 
 
 module.exports = (req, res, next) => {

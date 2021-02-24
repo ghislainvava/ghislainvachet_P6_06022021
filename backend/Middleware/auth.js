@@ -1,4 +1,4 @@
-const jwt = require('jsonwebtoken');
+const jwt = require('jsonwebtoken'); //pour encoder l'id 
 
 module.exports = (req, res, next) => {
     try {

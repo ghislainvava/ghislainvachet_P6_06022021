@@ -8,6 +8,7 @@ const helmet = require("helmet"); // protége en définnissant des en-têtes sé
 const xss = require('xss-clean'); //pour enpêcher le contrôle du navigateur 
 const mongoSanitize = require('express-mongo-sanitize'); // pour empecher l'utilisation $ dans MongoDB
 require('dotenv').config();
+const originAccept = ['http://localhost:4200'];
 
 //Connexion à la base de donnée Mongo
 mongoose.connect('mongodb+srv://Ghislain:10Gigimac@cluster0.vqotx.mongodb.net/fullstack?retryWrites=true&w=majority',
@@ -20,10 +21,18 @@ mongoose.connect('mongodb+srv://Ghislain:10Gigimac@cluster0.vqotx.mongodb.net/fu
 
 const app = express(); // cree l'Application
 
-app.use((req, res, next) => {
-    res.setHeader('Access-Control-Allow-Origin', '*'); //  * pour acces de toute origine
-    res.setHeader('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content, Accept, Content-Type, Authorization'); // type de header acceptés
-    res.setHeader('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, PATCH, OPTIONS'); // méthodes à utiliser
+app.use((req, res, next) => { //gestion du CORS
+    if (req.headers['origin'] && originAccept.includes(req.headers['origin'])){  //condition pour filtrer les origines
+      res.setHeader('Access-Control-Allow-Origin', req.headers['origin']);
+    } else {
+      res.setHeader('Access-Control-Allow-Origin', 'null');
+    }
+   
+    if (req.method === 'OPTIONS'){
+      res.setHeader('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content, Accept, Content-Type, Authorization'); // type de header acceptés
+      res.setHeader('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, PATCH, OPTIONS'); // méthodes à utiliser
+      return res.end();
+    }
     next();
 });
 app.use(bodyParser.json());

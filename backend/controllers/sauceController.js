@@ -1,6 +1,6 @@
 const Sauce = require('../models/sauce');
 const fs = require('fs'); // pour utiliser le CRUD
-const sauce = require('../models/sauce');
+
 
 
 //recuperation de toute les sauces
@@ -56,34 +56,36 @@ exports.clearOneSauce = (req, res) => {
 exports.sauceLike = (req, res) => {
    const liker = req.body.userId;
    const id = req.params.id;
-  
+    //Condition suivant si on like ou dislike
+    if (req.body.like === 1) {
+        Sauce.updateOne({ _id: id }, 
+            { $inc: { likes: + 1 }, $push: { usersLiked: liker } }) //on incremente le like et ajoute l'utilisateur à la liste
+            .then(() => res.status(200).json("Vous aimez cette sauce !"))
+            .catch(error => res.status(400).json({ error }));
+    }
+
     if (req.body.like === 0) {
         Sauce.findOne({ _id: id })
         .then(sauce => {
             if (sauce.usersLiked.includes(liker)) {
             Sauce.updateOne({ _id: id },
-                 { $inc: { likes: - 1 },$pull: { usersLiked: liker } })
-                .then(() => res.status(200).json("vous n'aimez plus cette sauce !"))
+                 { $inc: { likes: - 1 }, $pull: { usersLiked: liker } }) // on désincrémente le likes ou dislikes
+                .then(() => res.status(200).json("Vous n'aimez plus cette sauce !"))
                 .catch(error => res.status(400).json({ error }));
             }
             if (sauce.usersDisliked.includes(liker)) {
             Sauce.updateOne({ _id: id },
                 { $inc: { dislikes: - 1 }, $pull: { usersDisliked: liker } })
-                .then(() => res.status(200).json(" vous ne détestez plus cette sauce !"))
+                .then(() => res.status(200).json("Vous ne détestez plus cette sauce !"))
                 .catch(error => res.status(400).json({ error }));
             }
         })
     }
-    if (req.body.like === 1) {
-        Sauce.updateOne({ _id: id }, 
-            { $inc: { likes: + 1 }, $push: { usersLiked: liker } })
-            .then(() => res.status(200).json("vous aimez cette sauce !"))
-            .catch(error => res.status(400).json({ error }));
-    }
+    
     if (req.body.like === -1) {
         Sauce.updateOne({ _id: id }, 
-            { $inc: { dislikes: + 1 }, $push: { usersDisliked: liker } })
-            .then(() => res.status(200).json("vous n'aimez pas cette sauce !"))
+            { $inc: { dislikes: + 1 }, $push: { usersDisliked: liker } })//on incremente le dislike et ajoute l'utilisateur à la liste
+            .then(() => res.status(200).json("Vous n'aimez pas cette sauce !"))
             .catch(error => res.status(400).json({ error }));
     }
 };

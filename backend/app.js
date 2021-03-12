@@ -1,4 +1,5 @@
 const express = require('express'); // appel d'express
+var cors = require('cors');
 const mongoose = require('mongoose'); // pour se connecter à MongoDB
 const userRoutes = require('./routes/userRouter'); //appel route user
 const sauceRoutes = require('./routes/sauceRouter'); // appel route sauce
@@ -21,6 +22,8 @@ mongoose.connect('mongodb+srv://Ghislain:10Gigimac@cluster0.vqotx.mongodb.net/fu
 
 const app = express(); // cree l'Application
 
+
+
 app.use((req, res, next) => { //gestion du CORS
     if (req.headers['origin'] && originAccept.includes(req.headers['origin'])){  //condition pour filtrer les origines
       res.setHeader('Access-Control-Allow-Origin', req.headers['origin']);
@@ -35,6 +38,8 @@ app.use((req, res, next) => { //gestion du CORS
     }
     next();
 });
+
+app.use(cors());
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(helmet());

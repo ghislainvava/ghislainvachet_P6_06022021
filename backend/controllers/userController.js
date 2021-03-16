@@ -1,6 +1,6 @@
 const User = require('../models/User.js');
-const jwt = require('jsonwebtoken');
-const bcrypt = require('bcrypt');
+const jwt = require('jsonwebtoken'); //pour encoder l'id 
+const bcrypt = require('bcrypt'); //permet le hachage du mot de passe
 
 //pour l'Inscription
 exports.signup = (req, res) => {
@@ -16,6 +16,7 @@ exports.signup = (req, res) => {
     })
     .catch(error => res.status(500).json({ error }));
 };
+
 //pour la connexion
 exports.login = (req, res, next) => {
   User.findOne({ email: req.body.email})

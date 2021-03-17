@@ -5,14 +5,17 @@ const userRoutes = require('./routes/userRouter'); //appel route user
 const sauceRoutes = require('./routes/sauceRouter'); // appel route sauce
 const bodyParser = require('body-parser'); // pour utiliser Json
 const path = require('path'); // pour gérer le chemin d'acces 
-const helmet = require("helmet"); // protége en définnissant des en-têtes sécurisées
+const helmet = require("helmet"); // protége en définissant des en-têtes sécurisées
 const xss = require('xss-clean'); //pour enpêcher le contrôle du navigateur 
 const mongoSanitize = require('express-mongo-sanitize'); // pour empecher l'utilisation $ dans MongoDB
 require('dotenv').config();
 const originAccept = ['http://localhost:4200'];
+const dote = process.env.dot 
+const passW = process.env.pass
+
 
 //Connexion à la base de donnée Mongo
-mongoose.connect('mongodb+srv://Ghislain:10Gigimac@cluster0.vqotx.mongodb.net/fullstack?retryWrites=true&w=majority',
+mongoose.connect('mongodb+srv://'+dote+':'+passW+'@cluster0.vqotx.mongodb.net/fullstack?retryWrites=true&w=majority',
   { useNewUrlParser: true, //necessaire pour la version utilisée de mongoose
     useUnifiedTopology: true,
     useFindAndModify: false,

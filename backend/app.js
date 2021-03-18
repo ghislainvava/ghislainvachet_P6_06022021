@@ -10,12 +10,13 @@ const xss = require('xss-clean'); //pour enpêcher le contrôle du navigateur
 const mongoSanitize = require('express-mongo-sanitize'); // pour empecher l'utilisation $ dans MongoDB
 require('dotenv').config();
 const originAccept = ['http://localhost:4200'];
-const dote = process.env.dot 
-const passW = process.env.pass
+const MONGO_NAME = process.env.name 
+const MONGO_PASS = process.env.pass
+const MONGO_COL = process.env.col
 
 
 //Connexion à la base de donnée Mongo
-mongoose.connect('mongodb+srv://'+dote+':'+passW+'@cluster0.vqotx.mongodb.net/fullstack?retryWrites=true&w=majority',
+mongoose.connect('mongodb+srv://'+MONGO_NAME+':'+MONGO_PASS + MONGO_COL+'.vqotx.mongodb.net/fullstack?retryWrites=true&w=majority',
   { useNewUrlParser: true, //necessaire pour la version utilisée de mongoose
     useUnifiedTopology: true,
     useFindAndModify: false,

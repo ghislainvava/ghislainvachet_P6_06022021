@@ -11,7 +11,6 @@ exports.signup = (req, res) => {
     throw { error : "Votre email n'est pas valide"}
   }else{ 
   bcrypt.hash(req.body.password, 10)
-
     .then(hash => {
       const new_user = new User({
         email: crypto.HmacSHA256(req.body.email, 'RAMDOM_KEY_SECRET' ).toString(),
